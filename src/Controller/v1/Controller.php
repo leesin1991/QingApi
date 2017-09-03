@@ -16,10 +16,10 @@ class Controller extends AbstractController
         $item = $this->redis->get($mkey);
         if (!$item) {
             $code = mt_rand(100000, 999999);
-            $this->redis->setex($mkey, 60 * 3, $code);
+            $this->redis->setex($mkey, 60 * 30, $code);
             $smsConfig = $this->container->get('configs')['sms'];
             $sms = new Sms($smsConfig);
-            $msg = $smsConfig['sign'].'注册验证码： ' . $code . '，3分钟内有效,请勿重复获取!如非本人操作，请忽略。';
+            $msg = $smsConfig['sign'].'注册验证码： ' . $code . '，30分钟内有效,请勿重复获取!如非本人操作，请忽略。';
             $sms->send($mobile, $msg, 'true');
         }
         return true;
@@ -67,6 +67,11 @@ class Controller extends AbstractController
         $wxpay = $this->container->get('configs')['wxpay'];
         $server = new WxServer($wxpay);
         return $server->getPrePayOrder($bizcontent);
+    }
+
+    public function getOauthRequest(){
+        $oauthRequest = \OAuth2\Request::createFromGlobals();
+        return $oauthRequest->request;
     }
 
     public function notFound($req, $res) {

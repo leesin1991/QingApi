@@ -9,10 +9,9 @@ use Api\Controller\V1\Controller;
 class Index extends Controller
 {
 
-    public function sendSmsCode(Request $request, Response $response)
+    public function sendCode(Request $request, Response $response)
     {
-        $request = \OAuth2\Request::createFromGlobals();
-        $post = $request->request;
+        $post = $this->getOauthRequest();
         if ($post['mobile']) {
             $mobileValidate = validateMobile($post['mobile']);
             if (!$mobileValidate) {
@@ -30,6 +29,23 @@ class Index extends Controller
         return $return;
     }
 
+    public function verifyCode(Request $request, Response $response) {
+        $post = $this->getOauthRequest();
+        if ($post['mobile'] && $post['vericode']) {
+            $mobileValidate = validateMobile($post['mobile']);
+            if (!$mobileValidate) {
+            	return $this->jsonError($response,40012,'手机格式错误');
+            }
+            $vericodeCheck = $this->codeVerified($post['mobile'], $post['vericode']);
+            if (!$vericodeCheck) {
+                return $this->jsonError($response,40012,'验证码错误');
+            } else {
+            	return $this->jsonSuccess($response,null,'验证成功');
+            }
+        } else {
+            return $this->jsonError($response,40012,'请求参数错误');
+        }
+    }
 
 
 }

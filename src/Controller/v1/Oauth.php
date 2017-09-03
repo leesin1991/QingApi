@@ -17,7 +17,7 @@ class Oauth extends Controller
             if (md5($post['imei']) == $post['code']) {
                 $client_id = md5($post['imei']);
                 $client_secret = md5(Config::ENCRYPT_SECRET.uniqid());
-                $status = $storage->setClientDetails($client_id, $client_secret, Config::AUTHORIZE_REDIRECT_URL,'authorization_code');
+                $status = $storage->setClientDetails($client_id, $client_secret, Config::AUTHORIZE_REDIRECT_URL,'authorization_code refresh_token');
                 if ($status) {
                     $details = $storage->getClientDetails($client_id);
                     $data = $this->client($details);
