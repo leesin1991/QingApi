@@ -4,7 +4,7 @@ namespace Api\Config;
 
 class Config
 {
-    const DOMAIN = 'http://api.lc';
+    const DOMAIN = 'http://qing.lc';
     const API_VERSION = 'v1';
     const REDIRECT_URL = self::DOMAIN.'/'.self::API_VERSION;
     const AUTHORIZE_REDIRECT_URL = self::DOMAIN.'/'.self::API_VERSION.'/oauth/authorize';

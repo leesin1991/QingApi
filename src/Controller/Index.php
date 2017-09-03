@@ -5,7 +5,7 @@ namespace Api\Controller;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
-use Api\Controller\v1\Controller;
+use Api\Controller\V1\Controller;
 
 class Index extends Controller{
 

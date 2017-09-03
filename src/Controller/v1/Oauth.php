@@ -1,6 +1,6 @@
 <?php
 
-namespace Api\Controller\v1;
+namespace Api\Controller\V1;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
