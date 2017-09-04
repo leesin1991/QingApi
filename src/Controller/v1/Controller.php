@@ -35,14 +35,14 @@ class Controller extends AbstractController
         }
     }
 
-    public function setTokenUserId($access_token, $client_id, $user_id) {
-        $where = ['access_token' => $access_token, 'client_id' => $client_id];
+    public function setTokenUserId($access_token, $user_id) {
+        $where = ['access_token' => $access_token];
         $data = ['user_id' => intval($user_id)];
         return $this->db->oauth_access_tokens()->where($where)->update($data);
     }
 
-    public function getTokenUserId($access_token, $client_id) {
-        $where = ['access_token' => $access_token, 'client_id' => $client_id];
+    public function getTokenUserId($access_token) {
+        $where = ['access_token' => $access_token];
         $user_id = $this->db->oauth_access_tokens()->where($where)->fetch()['user_id'];
         if ($user_id < 1) {
             return 0;
@@ -50,8 +50,8 @@ class Controller extends AbstractController
         return $user_id;
     }
 
-    public function delTokenUserId($access_token, $client_id) {
-        $where = ['access_token' => $access_token, 'client_id' => $client_id];
+    public function delTokenUserId($access_token) {
+        $where = ['access_token' => $access_token];
         $data = ['user_id' => 0];
         return $this->db->oauth_access_tokens()->where($where)->update($data);
     }
@@ -72,6 +72,26 @@ class Controller extends AbstractController
     public function getOauthRequest(){
         $oauthRequest = \OAuth2\Request::createFromGlobals();
         return $oauthRequest->request;
+    }
+
+    public function checkMobileIsExists($mobile){
+        $where = ['mobile' => $mobile, 'is_del' => 0];
+        $result = $this->db->lq_user()->where($where)->fetch();
+        if (!$result) {
+            return true;
+        }
+    }
+
+    public function checkUsernameIsExists($username) {
+        $where = ['username' => $username];
+        $result = $this->db->lq_user()->where($where)->fetch();
+        if (!$result) {
+            return true;
+        }
+    }
+    
+    public function buildOrderNo() {
+        return date('Ymd') . substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 8);
     }
 
     public function notFound($req, $res) {

@@ -17,6 +17,8 @@ $app->group('/v1', function () {
     //sendSmsVcode
     $this->post('/sms/send', 'Api\Controller\V1\Sms\Index:sendCode');
     $this->post('/sms/verify', 'Api\Controller\V1\Sms\Index:verifyCode');
+    $this->post('/user/register', 'Api\Controller\V1\User\Index:register');
+    $this->post('/user/login', 'Api\Controller\V1\User\Index:login');
 
 })->add(function ($request, $response, $next) {
     $oauthRequest = \OAuth2\Request::createFromGlobals();
