@@ -12,12 +12,12 @@ class Index extends Controller
     public function sendCode(Request $request, Response $response)
     {
         $post = $this->getOauthRequest();
-        if ($post['mobile']) {
+        if ($post['mobile'] && $post['sms_type']) {
             $mobileValidate = validateMobile($post['mobile']);
             if (!$mobileValidate) {
             	return $this->jsonError($response,40012,'手机格式错误');
             }
-            $rs = $this->sendSmsVcode($post['mobile']);
+            $rs = $this->sendSmsVcode($post['mobile'], $post['sms_type']);
             if ($rs) {
             	return $this->jsonSuccess($response,null,'验证码已发送，请注意查收');
             } else {
@@ -31,12 +31,12 @@ class Index extends Controller
 
     public function verifyCode(Request $request, Response $response) {
         $post = $this->getOauthRequest();
-        if ($post['mobile'] && $post['vericode']) {
+        if ($post['mobile'] && $post['vericode'] && $post['sms_type']) {
             $mobileValidate = validateMobile($post['mobile']);
             if (!$mobileValidate) {
             	return $this->jsonError($response,40012,'手机格式错误');
             }
-            $vericodeCheck = $this->codeVerified($post['mobile'], $post['vericode']);
+            $vericodeCheck = $this->codeVerified($post['mobile'], $post['vericode'], $post['sms_type']);
             if (!$vericodeCheck) {
                 return $this->jsonError($response,40012,'验证码错误');
             } else {

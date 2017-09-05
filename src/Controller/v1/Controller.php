@@ -11,8 +11,8 @@ use Api\lib\Wxpay\WxServer;
 class Controller extends AbstractController
 {
 
-    public function sendSmsVcode($mobile) {
-        $mkey = 'm' . $mobile;
+    public function sendSmsVcode($mobile, $type = 'register') {
+        $mkey = $type . $mobile;
         $item = $this->redis->get($mkey);
         if (!$item) {
             $code = mt_rand(100000, 999999);
@@ -25,8 +25,8 @@ class Controller extends AbstractController
         return true;
     }
 
-    public function codeVerified($mobile, $code) {
-        $mkey = 'm' . $mobile;
+    public function codeVerified($mobile, $code, $type = 'register') {
+        $mkey = $type . $mobile;
         $item = $this->redis->get($mkey);
         if ($item) {
             return md5($code) == md5($item);

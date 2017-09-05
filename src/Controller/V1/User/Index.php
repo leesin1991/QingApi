@@ -86,56 +86,67 @@ class Index extends Controller
      * 忘记密码
      */
 
-    protected function forget() {
+    public function forget(Request $request, Response $response) {
         $post = $this->getOauthRequest();
         if ($post['mobile'] && $post['password'] && $post['vericode'] && $post['repassword']) {
+            
             $mobileValidate = validateMobile($post['mobile']);
             if (!$mobileValidate) {
                 return $this->jsonError($response,40012,'手机格式错误');
             }
-            $vericodeCheck = $this->codeVerified($post['mobile'], $post['vericode'], 'forget');
-            if (!$vericodeCheck) {
-
-                return array('status' => false, 'errno' => '40013', 'errmsg' => "验证码错误请重新输入");
-            }
-            $mobileCheck = $this->checkMobileIsRegistered($post['mobile']);
+            $mobileCheck = $this->checkMobileIsExists($post['mobile']);
             if ($mobileCheck) {
-                return array('status' => false, 'errno' => '40011', 'errmsg' => "该手机号未注册");
+                return $this->jsonError($response,40011,'手机号码不存在');
             }
-            $passwordValidate = $this->validatePassword($post['password']);
+            
+            $passwordValidate = validatePassword($post['password']);
             if (!$passwordValidate) {
-                return array('status' => false, 'errno' => '40017', 'errmsg' => "密码长度应在6到16位");
+                return $this->jsonError($response,40017,'密码长度应在6到16位');
             }
             if ($post['password'] != $post['repassword']) {
-                return array('status' => false, 'errno' => '40016', 'errmsg' => "两次输入输入不一致，请重新输入");
+                return $this->jsonError($response,40016,'两次输入输入不一致，请重新输入');
             }
-            $userRow = $this->app->no()->el_user()->where(array('mobile' => $post['mobile'], 'status' => 0, 'is_del' => 0))->fetch();
+
+            $vericodeCheck = $this->codeVerified($post['mobile'], $post['vericode'], 'forget');
+            if (!$vericodeCheck) {
+                return $this->jsonError($response,40013,'验证码错误请重新输入');
+            }
+            $where =  ['mobile' => $post['mobile'], 'status' => 0, 'is_del' => 0];
+            $userRow = $this->db->lq_user()->where($where)->fetch();
             if ($userRow) {
-                $data['password'] = md5($post['password'] . $userRow['login_salt']);
-                $rs = $userRow->update($data);
+                $data['password'] = md5($post['password'] . $userRow['salt']);
+                $data['mtime'] = time();
+                $rs = $this->db->lq_user()->where($where)->update($data);
                 if ($rs) {
-                    $return = ['status' => true, 'errno' => '0', 'message' => '密码重置成功'];
+                    return $this->jsonSuccess($response,null,'密码重置成功');
                 } else {
-                    $return = ['status' => false, 'errno' => '20002', 'errmsg' => '修改失败'];
+                    return $this->jsonError($response,20002,'修改失败');
                 }
             } else {
-                $return = ['status' => false, 'errno' => '41000', 'errmsg' => '该账号已锁定'];
+                return $this->jsonError($response,41000,'该账号不存在或已锁定');
             }
         } else {
-            $return = ['status' => false, 'errno' => '40001', 'errmsg' => '请求参数无效'];
+            return $this->jsonError($response,40012,'请求参数错误');
         }
-        return $return;
     }
 
     /*
      * 用户登出
      */
 
-    protected function logout() {
+    public function logout(Request $request, Response $response) {
         $post = $this->getOauthRequest();
-        $this->app->delTokenUserId($post['access_token'], $post['user_id']);
-        $return = ['status' => true, 'errno' => '0', 'message' => "登出成功"];
-        return $return;
+        if($post['access_token']){
+            $rs = $this->delTokenUserId($post['access_token'], $post['user_id']);
+            if ($rs) {
+                return $this->jsonSuccess($response,null,'登出成功');
+            }else{
+                return $this->jsonError($response,40012,'系统繁忙');
+            }
+            
+        }else{
+            return $this->jsonError($response,40012,'请求参数错误');
+        } 
     }
 
 

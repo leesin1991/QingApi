@@ -14,28 +14,32 @@ $app->group('/v1/oauth', function () {
 
 $app->group('/v1', function () {
     $this->any('/test', 'Api\Controller\V1\Test:index');
-    //sendSmsVcode
+    //sms
     $this->post('/sms/send', 'Api\Controller\V1\Sms\Index:sendCode');
     $this->post('/sms/verify', 'Api\Controller\V1\Sms\Index:verifyCode');
+    //
     $this->post('/user/register', 'Api\Controller\V1\User\Index:register');
     $this->post('/user/login', 'Api\Controller\V1\User\Index:login');
+    $this->post('/user/forget', 'Api\Controller\V1\User\Index:forget');
+    $this->post('/user/logout', 'Api\Controller\V1\User\Index:logout');
 
-})->add(function ($request, $response, $next) {
-    $oauthRequest = \OAuth2\Request::createFromGlobals();
-    $verifyResponse = $this->oauth2->verifyResourceRequest($oauthRequest);
-    if (!$verifyResponse) {
-        $body = $this->oauth2->getResponse()->getResponseBody();
-        $data = json_decode($body, true);
-        if (!$body) {
-            $data = '参数错误';
-        }
-        return $response->withHeader('Content-type', 'application/json')->withJson(array(
-            'errno' => 40015,
-            'errmsg' => $data
-        ));
-    }
-    return $next($request, $response);
 });
+// ->add(function ($request, $response, $next) {
+//     $oauthRequest = \OAuth2\Request::createFromGlobals();
+//     $verifyResponse = $this->oauth2->verifyResourceRequest($oauthRequest);
+//     if (!$verifyResponse) {
+//         $body = $this->oauth2->getResponse()->getResponseBody();
+//         $data = json_decode($body, true);
+//         if (!$body) {
+//             $data = '参数错误';
+//         }
+//         return $response->withHeader('Content-type', 'application/json')->withJson(array(
+//             'errno' => 40015,
+//             'errmsg' => $data
+//         ));
+//     }
+//     return $next($request, $response);
+// });
 
 
 
