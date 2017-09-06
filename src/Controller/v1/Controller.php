@@ -90,8 +90,88 @@ class Controller extends AbstractController
         }
     }
     
+    public function _createPayOrder($user_id,$pay_way,$product_type,$product_id,$total){
+        $where['uid'] = $user_id;
+        $where['product_type'] =  $product_type;
+        $where['product_id'] = $product_id;  
+        $where['status'] = 0;
+        $orderRow = $this->db->lq_orders($where)->fetch();
+        $bodyArr = [1=>'课程报名',2=>'赛事报名',3=>'会员购买'];
+        $now = time();
+        $createTime = date('Y-m-d H:i:s', $now);
+        $orderid = $product_type . $this->buildOrderNo();
+        $prepaidOrder = [
+            'uid' => $user_id,
+            'out_trade_no' => $orderid,
+            'total' => $total,
+            'pay_way' => $pay_way,
+            'product_type' => $product_type, 
+            'product_id' => $product_id,
+            'ctime' => $now,
+            'deadtime' => $now + 30*60
+        ];
+        if($orderRow){
+            $updateRes = $orderRow->update($prepaidOrder);  
+        }else{
+            $newOrder = $this->operateData('el_orders', $prepaidOrder);
+        }
+        if($pay_way === 1){
+            $bizcontent = [
+                'body' => '订单测试',
+                'subject' => $bodyArr[$product_type],
+                'out_trade_no' => $orderid,
+                'timeout_express' => '30m',
+                'total_amount' => $total,
+    //                'total_amount' => '0.01',
+                'pay_way' => $pay_way,
+                'type' => $product_type, 
+                'product_code' => $product_id,
+                'createtime' => $createTime
+            ];
+        }else if($pay_way === 2){
+            $bizcontent = [
+                'body' => $bodyArr[$product_type],
+                'out_trade_no' => $orderid,
+                'total_fee' => intval($total*100),
+//                'total_fee' => 1,
+                'pay_way' => 2,
+                'type' => $product_type, 
+                'product_code' => $product_id,
+            ];
+        }else{
+            return false;
+        }
+        if(!$newOrder && !$updateRes){
+            return false;
+        }else{
+            return $bizcontent;
+        }
+    }
+
     public function buildOrderNo() {
         return date('Ymd') . substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 8);
+    }
+
+    public function operateData($table, $data, $is_update = null, $id = null) {
+
+        if (!$is_update) {
+            $data['id'] = 0;
+            $insertRes = $this->db->$table()->insert($data);
+            if ($insertRes) {
+                $insert_id = $this->db->$table()->insert_id();
+                return $insert_id;
+            } else {
+                return FALSE;
+            }
+        } else {
+            $obj = $this->db->$table[$id];
+            $rs = $obj->update($data);
+            if ($rs) {
+                return $rs;
+            } else {
+                return FALSE;
+            }
+        }
     }
 
     public function notFound($req, $res) {

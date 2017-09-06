@@ -53,7 +53,6 @@ class Index extends Controller
         } else {
             return $this->jsonError($response,40012,'请求参数错误');
         }
-        return $return;
     }
 
     public function login(Request $request, Response $response)
