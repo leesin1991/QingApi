@@ -9,6 +9,8 @@ $app->group('/v1/oauth', function () {
     $this->post('/authorize/{auth}.html', 'Api\Controller\V1\Oauth:authorize');
     $this->post('/token/{auth}.html', 'Api\Controller\V1\Oauth:token');
 	$this->post('/refresh/{auth}.html', 'Api\Controller\V1\Oauth:refresh');
+    $this->post('/notify/alipay', 'Api\Controller\V1\Notify\Index:aliPay');
+    $this->post('/notify/wxpay', 'Api\Controller\V1\Notify\Index:wxPay');
 	// $this->post('/resource.html', 'Api\Controller\V1\Oauth:resource');
 });
 
@@ -24,6 +26,8 @@ $app->group('/v1', function () {
     $this->post('/user/logout', 'Api\Controller\V1\User\Index:logout');
 
 });
+
+
 // ->add(function ($request, $response, $next) {
 //     $oauthRequest = \OAuth2\Request::createFromGlobals();
 //     $verifyResponse = $this->oauth2->verifyResourceRequest($oauthRequest);
