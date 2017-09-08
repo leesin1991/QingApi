@@ -9,8 +9,8 @@ $app->group('/v1/oauth', function () {
     $this->post('/authorize/{auth}.html', 'Api\Controller\V1\Oauth:authorize');
     $this->post('/token/{auth}.html', 'Api\Controller\V1\Oauth:token');
 	$this->post('/refresh/{auth}.html', 'Api\Controller\V1\Oauth:refresh');
-    $this->post('/notify/alipay', 'Api\Controller\V1\Notify\Index:aliPay');
-    $this->post('/notify/wxpay', 'Api\Controller\V1\Notify\Index:wxPay');
+    $this->post('/notify/alipay.html', 'Api\Controller\V1\Notify\Index:aliPay');
+    $this->post('/notify/wxpay.html', 'Api\Controller\V1\Notify\Index:wxPay');
 	// $this->post('/resource.html', 'Api\Controller\V1\Oauth:resource');
 });
 
