@@ -16,14 +16,16 @@ $app->group('/v1/oauth', function () {
 
 $app->group('/v1', function () {
     $this->any('/test', 'Api\Controller\V1\Test:index');
-    //sms
+    // sms
     $this->post('/sms/send', 'Api\Controller\V1\Sms\Index:sendCode');
     $this->post('/sms/verify', 'Api\Controller\V1\Sms\Index:verifyCode');
-    //
+    // user
     $this->post('/user/register', 'Api\Controller\V1\User\Index:register');
     $this->post('/user/login', 'Api\Controller\V1\User\Index:login');
     $this->post('/user/forget', 'Api\Controller\V1\User\Index:forget');
     $this->post('/user/logout', 'Api\Controller\V1\User\Index:logout');
+    // upload
+    $this->post('/upload/image', 'Api\Controller\V1\Upload\Index:imgUpload');
 
 });
 
