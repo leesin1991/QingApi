@@ -4,13 +4,31 @@
 $app->any('/', 'Api\Controller\Index:index');
 $app->any('/test', 'Api\Controller\V1\Test:index');
 
+$app->post('/notify/alipay.html', 'Api\Controller\V1\Notify\Index:aliPay');
+$app->post('/notify/wxpay.html', 'Api\Controller\V1\Notify\Index:wxPay');
+
+$resourceAuth = function ($request, $response, $next) {
+    $oauthRequest = \OAuth2\Request::createFromGlobals();
+    $verifyResponse = $this->oauth2->verifyResourceRequest($oauthRequest);
+    if (!$verifyResponse) {
+        $body = $this->oauth2->getResponse()->getResponseBody();
+        $data = json_decode($body, true);
+        if (!$body) {
+            $data = '参数错误';
+        }
+        return $response->withHeader('Content-type', 'application/json')->withJson(array(
+            'errno' => 40015,
+            'errmsg' => $data
+        ));
+    }
+    return $next($request, $response);
+};
+
 $app->group('/v1/oauth', function () {
     $this->post('/register.html', 'Api\Controller\V1\Oauth:register');
     $this->post('/authorize/{auth}.html', 'Api\Controller\V1\Oauth:authorize');
     $this->post('/token/{auth}.html', 'Api\Controller\V1\Oauth:token');
 	$this->post('/refresh/{auth}.html', 'Api\Controller\V1\Oauth:refresh');
-    $this->post('/notify/alipay.html', 'Api\Controller\V1\Notify\Index:aliPay');
-    $this->post('/notify/wxpay.html', 'Api\Controller\V1\Notify\Index:wxPay');
 	// $this->post('/resource.html', 'Api\Controller\V1\Oauth:resource');
 });
 
@@ -27,7 +45,7 @@ $app->group('/v1', function () {
     // upload
     $this->post('/upload/image', 'Api\Controller\V1\Upload\Index:imgUpload');
 
-});
+})->add($resourceAuth);
 
 
 // ->add(function ($request, $response, $next) {
