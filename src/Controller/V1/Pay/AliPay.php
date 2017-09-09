@@ -14,12 +14,12 @@ class AliPay extends Controller
     {
         $post = $this->getOauthRequest();
         if ($post['total'] && $post['type'] && $post['product_id']) {
-            $user_id = $this->getTokenUserId($post['access_token'], $post['client_id']);
+            $user_id = $this->getTokenUserId($post['access_token']);
             if($user_id < 1 ){
                 return $this->jsonError($response,41001,'前先登录！');
             }
             $type = intval($post['type']);
-            $isPaid = $this->app->db->lq_orders()->where(['uid'=>$user_id,'product_type'=>$type,'product_id'=>$post['product_id'],'status'=>1])->fetch();
+            $isPaid = $this->db->lq_orders()->where(['uid'=>$user_id,'product_type'=>$type,'product_id'=>$post['product_id'],'status'=>1])->fetch();
             if($isPaid){
                 return $this->jsonError($response,42014,'您已购买过');
             }
@@ -29,9 +29,10 @@ class AliPay extends Controller
             }else{
                 return $this->jsonError($response,-1,'系统繁忙，请稍后再试！');
             }   
-//            print_r($aliOrder);die;
+            // print_r($beforePayCheckRes);die;
             $bizcontent = json_encode($aliOrder);
-            $server = new Server();
+            $config = $this->container->get('configs')['alipay'];
+            $server = new Server($config);
             $return = $server->getPrePayOrder($bizcontent); 
             $data = ['order'=>$return];
             return $this->jsonSuccess($response, $data);

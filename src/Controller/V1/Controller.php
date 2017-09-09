@@ -45,7 +45,7 @@ class Controller extends AbstractController
         $where = ['access_token' => $access_token];
         $user_id = $this->db->oauth_access_tokens()->where($where)->fetch()['user_id'];
         if ($user_id < 1) {
-            return 0;
+            return false;
         }
         return $user_id;
     }
@@ -111,9 +111,9 @@ class Controller extends AbstractController
             'deadtime' => $now + 30*60
         ];
         if($orderRow){
-            $updateRes = $orderRow->update($prepaidOrder);  
+            $updateRes = $this->db->lq_orders($where)->update($prepaidOrder);  
         }else{
-            $newOrder = $this->operateData('el_orders', $prepaidOrder);
+            $newOrder = $this->operateData('lq_orders', $prepaidOrder);
         }
         if($pay_way === 1){
             $bizcontent = [
