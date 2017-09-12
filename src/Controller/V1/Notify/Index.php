@@ -48,7 +48,7 @@ class Index extends Controller
         }
     }
 
-    public function wxNotifyPost(Request $req, Response $res, $args) { 
+    public function wxPay(Request $req, Response $res, $args) { 
         $xml = file_get_contents('php://input');
         $return = json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);  
         if($return) {

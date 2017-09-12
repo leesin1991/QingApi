@@ -130,6 +130,51 @@ class Index extends Controller
     }
 
     /*
+     * 重置密码
+     */
+
+    public function resetPassword(Request $request, Response $response) {
+        $post = $this->getOauthRequest();
+        if ($post['access_token'] && $post['source_password'] && $post['new_password'] && $post['repassword']) {
+            $user_id = $this->getTokenUserId($post['access_token']);
+            if($user_id < 1 ){
+                return $this->jsonError($response,41001,'前先登录！');
+            }
+
+            $passwordValidate = validatePassword($post['new_password']);
+            if (!$passwordValidate) {
+                return $this->jsonError($response,40017,'密码长度应在6到16位');
+            }
+            if ($post['new_password'] != $post['repassword']) {
+                return $this->jsonError($response,40016,'两次输入输入不一致，请重新输入');
+            }
+            $where = ['id' => $user_id, 'is_del' => 0];
+            $userRow = $this->db->lq_user()->where($where)->fetch('salt,password');
+            if ($userRow) {
+                $source_password = md5($post['source_password'] . $userRow['salt']);
+                
+                if ($source_password === $userRow['password']) {
+                    $data['mtime'] = time();
+                    $data['password'] = md5($post['source_password'] . $userRow['salt']);
+                    $rs = $this->db->lq_user()->where($where)->update($data);
+                    if ($rs) {
+                        return $this->jsonSuccess($response,null,'密码重置成功');
+                    } else {
+                        return $this->jsonError($response,20002,'修改失败');
+                    }
+                }else{
+                    return $this->jsonError($response,20002,'密码错误');
+                }
+                
+            } else {
+                return $this->jsonError($response,41000,'该账号不存在或已锁定');
+            }
+        } else {
+            return $this->jsonError($response,40012,'请求参数错误');
+        }
+    }
+
+    /*
      * 用户登出
      */
 
