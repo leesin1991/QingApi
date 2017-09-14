@@ -152,7 +152,7 @@ class Controller extends AbstractController
         return date('Ymd') . substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 8);
     }
 
-    public function operateData($table, $data, $is_update = null, $id = null) {
+    public function saveData($table, $data, $is_update = null, $id = null) {
 
         if (!$is_update) {
             $data['id'] = 0;
