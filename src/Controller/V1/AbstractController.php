@@ -29,7 +29,7 @@ abstract class AbstractController
         $this->mongo = $container->get('mongodb'); 
         $this->oauth2 = $container->get('oauth2'); 
         $this->view = $container->get('renderer');
-        // print_r($this->oauth2);die;
+        // print_r($this->db);die;
     }
    
     protected function jsonSuccess(Response $response, $data = null, $message = '')

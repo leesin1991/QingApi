@@ -15,7 +15,7 @@ class Controller extends AbstractController
         $mkey = $type . $mobile;
         $item = $this->redis->get($mkey);
         if (!$item) {
-            $code = mt_rand(100000, 999999);
+            $code = mt_rand(1000, 9999);
             $this->redis->setex($mkey, 60 * 30, $code);
             $smsConfig = $this->container->get('configs')['sms'];
             $sms = new Sms($smsConfig);

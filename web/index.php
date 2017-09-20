@@ -29,8 +29,8 @@ require __DIR__ . '/../app/middleware.php';
 // Register routes
 require __DIR__ . '/../app/routes.php';
 
-// Load common function
-require __DIR__ . '/../app/function.php';
+// Load common functions
+require __DIR__ . '/../app/functions.php';
 
 // Run app
 $app->run();
