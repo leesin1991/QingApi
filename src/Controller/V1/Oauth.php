@@ -4,7 +4,7 @@ namespace Api\Controller\V1;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
-use Api\Config\Config;
+use Api\V1\Config\Config;
 
 class Oauth extends Controller
 {

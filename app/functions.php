@@ -106,6 +106,13 @@ function mkpath($path, $mode = 0777) {
 }
 
 /*
+ * 密码加密
+ */
+function encryptPassword($password, $salt) {
+    return md5(md5($password).$salt);
+}
+
+/*
  * 过滤非法html标签
  */
 function t($text) {

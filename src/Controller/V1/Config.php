@@ -1,10 +1,10 @@
 <?php
 
-namespace Api\Config;
+namespace Api\V1\Config;
 
 class Config
 {
-	const ROOT_PATH = dirname(dirname(dirname(__FILE__)));
+	const ROOT_PATH = dirname(dirname(__FILE__));
     const DOMAIN = 'http://qing.lc';
     const API_VERSION = 'v1';
     const REDIRECT_URL = self::DOMAIN.'/'.self::API_VERSION;
@@ -19,4 +19,3 @@ class Config
 
     }
 }
-

@@ -6,11 +6,13 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
 use Api\Controller\V1\Controller;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class Index extends Controller{
 
     public function index(Request $request, Response $response)
     {
+        // echo phpinfo();die;
         //echo base64_encode(random_bytes(32));die; //wwTCGJizEE9W0BBonTbOM78yeJcDc7LlDohKVOSQm+s=
         // print_r($this->container);die;
         // $this->sendSmsVcode('15900545092');die;
@@ -48,7 +50,14 @@ class Index extends Controller{
         // $rs = $this->db->clients()->select('');
         // $data = toArray($rs);
         // print_r($data);
-        die('Permission denied!');
+
+        // $manager = new ImageManager(array('driver' => 'gd'));
+        // $image = $manager->make('upload/img/tu1.jpg')->resize(300, 200);
+        Image::configure(array('driver' => 'gd'));
+        $image = Image::make('upload/img/tu1.png')->resize(300, 200)->save('bar.jpg');;
+        // return $image->response('jpg');
+        // print_r($image);
+        // die('Permission denied!');
 
     }
 
