@@ -53,11 +53,11 @@ class Index extends Controller{
 
         // $manager = new ImageManager(array('driver' => 'gd'));
         // $image = $manager->make('upload/img/tu1.jpg')->resize(300, 200);
-        Image::configure(array('driver' => 'gd'));
-        $image = Image::make('upload/img/tu1.png')->resize(300, 200)->save('bar.jpg');;
+        // Image::configure(array('driver' => 'gd'));
+        // $image = Image::make('upload/img/tu1.png')->resize(300, 200)->save('upload/img/tu1.png');;
         // return $image->response('jpg');
         // print_r($image);
-        // die('Permission denied!');
+        die('Permission denied!');
 
     }
 
