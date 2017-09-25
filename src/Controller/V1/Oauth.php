@@ -23,13 +23,13 @@ class Oauth extends Controller
                     $data = $this->client($details);
                     return $this->jsonSuccess($res,$data);
                 } else {
-                    return $this->jsonError($res,40002,'设置失败');
+                    return $this->jsonError($res,20001,'设置失败');
                 }
             } else {
-                return $this->jsonError($res,40003,'请求参数不合法');
+                return $this->jsonError($res,10013,'请求参数不合法');
             }
         } else {
-            return $this->jsonError($res,40001,'请求参数缺失');
+            return $this->jsonError($res,10012,'请求参数缺失');
         }
     }
 
@@ -51,10 +51,10 @@ class Oauth extends Controller
                 ];
                 return $this->jsonSuccess($res,$data);
             } else {
-                return $this->jsonError($res,40004,'授权失败');
+                return $this->jsonError($res,20002,'授权失败');
             }
         } else {
-            return $this->jsonError($res,40003,'请求参数不合法');
+            return $this->jsonError($res,10013,'请求参数不合法');
         }
     }
 
@@ -74,10 +74,10 @@ class Oauth extends Controller
             if (isset($data['access_token'])) {
                 return $this->jsonSuccess($res,$data);
             } else {
-                return $this->jsonError($res,40005,$data);
+                return $this->jsonError($res,20003,$data);
             }
         } else {
-            return $this->jsonError($res,40003,'请求参数不合法');
+            return $this->jsonError($res,10013,'请求参数不合法');
         }
     }
 
@@ -100,7 +100,7 @@ class Oauth extends Controller
                 return $this->jsonError($res,40005,$data);
             }
         } else {
-            return $this->jsonError($res,40003,'请求参数不合法');
+            return $this->jsonError($res,10013,'请求参数不合法');
         }
     }
 
